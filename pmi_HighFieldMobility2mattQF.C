@@ -1,25 +1,3 @@
-
-
-/*
-
- 
-
-  Copyright (c) 1994-2014 Synopsys, Inc.
-
-  This file and the associated documentation are proprietary to
-
-  Synopsys, Inc.  This file may only be used in accordance with the
-
-  terms and conditions of a written license agreement with Synopsys,
-
-  Inc.  All other use, reproduction, or distribution of this file is
-
-  strictly prohibited.
-
- 
-
-*/
-
  
 
 #include "PMIModels.h"
