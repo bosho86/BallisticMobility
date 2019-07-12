@@ -1,0 +1,329 @@
+
+
+
+Material = "InGaAs" {
+
+Bandgap {
+	* parameters from InGaAs_SDeviceElectrostaticParams_Helen.txt (for xGa=0.47)
+	* parameter Eg0:
+	   Tpar	= 300	# [K]        
+	   Chi0    = 4.63331683   # [eV] 			# xGa=0.47, at 300K
+	   Eg0     =  0.9735  # [eV]			# xGa=0.47, at 300K
+ }
+
+Epsilon {
+	* parameters from InGaAs_SDeviceElectrostaticParams_Helen.txt (for xGa=0.47)
+	   epsilon= 13.6420		#xGa=0.47
+  }
+
+Epsilon_aniso {
+	* parameters from InGaAs_SDeviceElectrostaticParams_Helen.txt (for xGa=0.47)
+	   epsilon= 13.6420		#xGa=0.47
+  } 
+
+eDOSMass {
+	* parameters from InGaAs_SDeviceElectrostaticParams_Helen.txt (for xGa=0.47)
+                   Formula = 2
+	   Nc300 = 4.0820E+17 			# xGa=0.47
+  }
+
+hDOSMass {
+	* parameters from InGaAs_SDeviceElectrostaticParams_Helen.txt (for xGa=0.47)
+                   Formula = 2
+	   Nv300 = 1.0883E+19			# xGa=0.47
+  }
+
+MultiValley {
+	
+	eValley"Gamma"(m=@masstl@ alpha=@alpha@ energy=0.139303089370000  dospower=@dospower@ )
+	eValley"Gamma1"(m=@masstl@ alpha=@alpha@ energy=0.316526435826000 dospower=@dospower@ )
+	eValley"Gamma2"(m=@masstl@ alpha=@alpha@ energy=0.316526953632000 dospower=@dospower@ )
+	eValley"Gamma3"(m=@masstl@ alpha=@alpha@ energy=0.449801414669000 dospower=@dospower@ )
+	eValley"Gamma4"(m=@masstl@ alpha=@alpha@ energy=0.537072271896000 dospower=@dospower@ )	  
+}
+
+
+ConstantMobility:
+{ * mu_const = mumax (T/T0)^(-Exponent)
+  * Mole fraction dependent model.
+  * If only constant parameters are specified, those values will be
+  * used for any mole fraction instead of the interpolation below.
+  * Linear interpolation is used on the interval [0,1].
+	Exponent(0)	= 1.5,	1.5	#[1]
+	Exponent(1)	= 1,	2.1	#[1]
+	mumax(0)	= @uchannel@,	2.5000e+02	#[cm^2/(Vs)]
+	mumax(1)	= @uchannel@,	4.0000e+02	#[cm^2/(Vs)]
+	mutunnel(0)	= 0.05,	0.05	#[cm^2/(Vs)]
+	mutunnel(1)	= 0.05,	0.05	#[cm^2/(Vs)]
+}
+
+
+pmi_HighFieldMobility2{
+  * Caughey-Thomas model:
+  * mu_highfield = mu_lowfield / ( 1 + (mu_lowfield E / vsat)^beta )^1/beta
+  * beta = beta0 (T/T0)^betaexp.
+  beta0   = 1  # [1]
+  betaexp = 0          # [1]
+
+  * For vsat either Formula1 or Formula2 can be used.
+  Vsat_Formula = 1      # [1]
+  * Formula1 for saturation velocity:
+  *            vsat = vsat0 (T/T0)^(-Vsatexp)
+  * (Parameter Vsat_Formula has to be not equal to 2):
+  vsat0   = 10e+10     # [1]
+  vsatexp = 0        # [1]
+}
+
+
+Band2BandTunneling
+{
+	##QuantumPotentialPosFac= 1 
+	Apath=0
+	Bpath=0
+	Cpath=@gc@
+	degeneracy=2 ##why is 2??
+	Dpath=0
+	m_c= @mctunneling@
+	m_v= @mvtunneling@
+	Ppath=0
+	
+}
+
+
+Scharfetter * relation and trap level for SRH recombination:
+{ * tau = taumin + ( taumax - taumin ) / ( 1 + ( N/Nref )^gamma)
+  * tau(T) = tau * ( (T/300)^Talpha )          (TempDep)
+  * tau(T) = tau * exp( Tcoeff * ((T/300)-1) ) (ExpTempDep)
+	taumin	= 0 ,	0	# [s]
+	taumax	= 1e-8 , 	1e-9  # [s]
+	Nref	= 1.0000e+25 ,	1.0000e+25	# [cm^(-3)] to eliminate term ( 1 + ( N/Nref )^gamma)
+	gamma	= 1 ,	1	# [1]
+	Talpha	= 0.0000e+00 ,	0.0000e+00	# [1]
+	Tcoeff	= 0.0000e+00 ,	0.0000e+00	# [1]
+	Etrap	= 0.0000e+00	# [eV]
+}
+
+Auger * coefficients:
+{ * R_Auger = ( C_n n + C_p p ) ( n p - ni_eff^2)
+  * with C_n,p = (A + B (T/T0) + C (T/T0)^2) (1 + H exp(-{n,p}/N0))
+	A	= 2.5e-28 ,	2.5e-28	# [cm^6/s]
+	B	= 0.0000e+00 ,	0.0000e+00	# [cm^6/s]
+	C	= 0.0000e+00 ,	0.0000e+00	# [cm^6/s]
+	H	= 0.0000e+00 ,	0.0000e+00	# [1]
+	N0	= 1.0000e+10 ,	1.0000e+10	# [cm^(-3)] small value to get rid of the term, normal e+18ls
+	
+}
+
+BarrierTunneling
+{
+	* turning the quantum correction off
+	alpha = 1, 1
+	mt = @mctunneling@, @mvtunneling@
+	g = @gc@, @gv@
+}
+LatticeParameters
+{
+X=(1,0,0)
+Y=(0,1,0)
+}
+
+QuantumPotentialParameters "100"   
+{ * Parameters extracted for "100" orientation
+
+	 Xmax (0) = 0.0
+	 Xmax (1) = 0.1
+	 Xmax (2) = 0.2 
+	 Xmax (3) = 0.3
+	 Xmax (4) = 0.4
+	 Xmax (5) = 0.5
+	 Xmax (6) = 0.6
+	 Xmax (7) = 0.7
+	 Xmax (8) = 0.8
+	 Xmax (9) = 0.9
+	 Xmax (10) = 1.0
+
+  * For bulk configuration
+	gamma	= @gammavertical@ ,	4.5	# [1]		#see InAs
+
+	theta	= 0.5 ,	0.5	# [1]
+	xi	= 1 ,	1	# [1]
+	eta	= 1 ,	1	# [1]
+	nu	= 0.0000e+00 ,	0.0000e+00	# 
+				
+	
+		
+	alpha[1] = @alphavert@, @alphavert@
+	alpha[2] = @alphavert@, @alphavert@
+	alpha[3] = @alphahor@, @alphahor@
+}
+
+QuantumPotentialParameters "110"   
+{ * Parameters extracted for "100" orientation
+
+	 Xmax (0) = 0.0
+	 Xmax (1) = 0.1
+	 Xmax (2) = 0.2 
+	 Xmax (3) = 0.3
+	 Xmax (4) = 0.4
+	 Xmax (5) = 0.5
+	 Xmax (6) = 0.6
+	 Xmax (7) = 0.7
+	 Xmax (8) = 0.8
+	 Xmax (9) = 0.9
+	 Xmax (10) = 1.0
+
+  * For bulk configuration
+	gamma	= @gammavertical@ ,	4.5	# [1]		#see InAs
+
+	theta	= 0.5 ,	0.5	# [1]
+	xi	= 1 ,	1	# [1]
+	eta	= 1 ,	1	# [1]
+	nu	= 0.0000e+00 ,	0.0000e+00	# 
+				
+	
+		
+	alpha[1] = @alphavert@, @alphavert@
+	alpha[2] = @alphavert@, @alphavert@
+	alpha[3] =  @alphahor@, @alphahor@
+}
+
+}
+
+
+Material = "HfO2" {
+
+Epsilon
+{ *  Ratio of the permittivities of material and vacuum
+
+  * epsilon() = epsilon
+	epsilon	= 22.0	# [1]
+}
+
+Epsilon_aniso
+{ *  Ratio of the permittivities of material and vacuum
+
+  * epsilon() = epsilon
+	epsilon	= 22.0	# [1]
+}
+
+Bandgap
+{ * Eg = Eg0 + dEg0 + alpha Tpar^2 / (beta + Tpar) - alpha T^2 / (beta + T#an appropriate BGN model, if this BGN model is chosen in Physics section
+  * Parameter 'Tpar' specifies the value of lattice 
+  * temperature, at which parameters below are defined
+  * Chi0 is electron affinity.
+         
+	  Chi0	= 2.05	# [eV]
+	  Eg0	= 6.0	# [eV]
+	  Tpar	= 300	# [K]	 
+}
+
+LatticeParameters
+{
+X=(1,0,0)
+Y=(0,1,0)
+}
+
+QuantumPotentialParameters "100"
+{
+        gamma = @oxidegamma@, 4.310
+	theta	= 0.5 ,	0.5	# [1]
+	xi	= 1 ,	1	# [1]
+	eta	= 1 ,	1	# [1]
+	nu	= 0.0000e+00 ,	0.0000e+00	# [1] 
+        
+	alpha[1] = @alphavert@, @alphavert@
+	alpha[2] = @alphavert@, @alphavert@
+	alpha[3] =  @alphahor@, @alphahor@
+
+
+}
+QuantumPotentialParameters "110"
+{
+        gamma = @oxidegamma@, 4.310
+	theta	= 0.5 ,	0.5	# [1]
+	xi	= 1 ,	1	# [1]
+	eta	= 1 ,	1	# [1]
+	nu	= 0.0000e+00 ,	0.0000e+00	# [1] 
+        
+	alpha[1] = @alphavert@, @alphavert@
+	alpha[2] = @alphavert@, @alphavert@
+	alpha[3] =  @alphahor@, @alphahor@
+
+
+}
+
+}
+
+Region = "drain" {
+ConstantMobility:
+{ * mu_const = mumax (T/T0)^(-Exponent)
+  * Mole fraction dependent model.
+  * If only constant parameters are specified, those values will be
+  * used for any mole fraction instead of the interpolation below.
+  * Linear interpolation is used on the interval [0,1].
+	Exponent(0)	= 1.5,	1.5	#[1]
+	Exponent(1)	= 1,	2.1	#[1]
+	mumax(0)	= @ucontact@,	2.5000e+02	#[cm^2/(Vs)]
+	mumax(1)	= @ucontact@,	4.0000e+02	#[cm^2/(Vs)]
+	mutunnel(0)	= 0.05,	0.05	#[cm^2/(Vs)]
+	mutunnel(1)	= 0.05,	0.05	#[cm^2/(Vs)]
+}
+
+Band2BandTunneling
+{
+	##QuantumPotentialPosFac= 1 
+	Apath=0
+	Bpath=0
+	Cpath=@gc@
+	degeneracy=2 ##why is 2??
+	Dpath=0
+	m_c= @mctunneling@
+	m_v= @mvtunneling@
+	Ppath=0
+	
+}
+
+ }
+
+Region = "source" {
+ConstantMobility:
+{ * mu_const = mumax (T/T0)^(-Exponent)
+  * Mole fraction dependent model.
+  * If only constant parameters are specified, those values will be
+  * used for any mole fraction instead of the interpolation below.
+  * Linear interpolation is used on the interval [0,1].
+	Exponent(0)	= 1.5,	1.5	#[1]
+	Exponent(1)	= 1,	2.1	#[1]
+	mumax(0)	= @ucontact@,	2.5000e+02	#[cm^2/(Vs)]
+	mumax(1)	= @ucontact@,	4.0000e+02	#[cm^2/(Vs)]
+	mutunnel(0)	= 0.05,	0.05	#[cm^2/(Vs)]
+	mutunnel(1)	= 0.05,	0.05	#[cm^2/(Vs)]
+}
+
+ 
+
+
+BarrierTunneling
+{
+	* turning the quantum correction off
+	alpha = 1, 1
+	mt = @mctunneling@, @mvtunneling@
+	g = @gc@, @gv@
+}
+
+Band2BandTunneling
+{
+	##QuantumPotentialPosFac= 1 
+	Apath=0
+	Bpath=0
+	Cpath=@gc@
+	degeneracy=2 ##why is 2??
+	Dpath=0
+	m_c= @mctunneling@
+	m_v= @mvtunneling@
+	Ppath=0
+	
+}
+
+
+   }
