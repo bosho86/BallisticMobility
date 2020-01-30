@@ -56,22 +56,12 @@ public:
      const double efield=ReadScalar("ElectricField");
      const double md=ReadScalar("eMobility");
      const double psi =ReadScalar("eQuasiFermiPotential");
-    //const double j_tobx=ReadScalar("eCurrentDensity");
-    // const double j_tobx=ReadScalar("eCurrentDensity-X");
-//    double j_tobx[3];
-  //   ReadVector("eCurrentDensity", j_tobx);
-    // double jtob1=j_tobx[0];
      const double mulow = in->mulow();     
-
      const double v02 =sqrt((K*T)*(1/(m0*meff)));
-    // const float nsource=5e19;
-     
      const double cb_edge_now=ReadScalar("ConductionBandEnergy");
-
      const double timeNow = ReadTime();
      
-     //std::cout<<timeNow<<std::endl;
-    // if point between ymin and ymax of the center.
+   
 
      if (abs(timeNow - timeLast) > 1e-10) {
 	cb_edge_tob0 = -1e10;
@@ -85,8 +75,7 @@ public:
         efield_tob0=efield;
      }
    
-   
-   //  const double term= nsource/n_now;
+
      const double term1=eDensity_tob0/n_now;
      const double vo = v02*(tanh(0.05/(2*K*T)))*eDensity_tob0;
      const float vk = v02*(tanh(0.05/(2*K*T)))*term1;//*(fabs(nsource/n_now)); 
@@ -105,12 +94,7 @@ public:
     
     out-> val()= mu2;}
 
-    
-     //if (mumodel>=mulow)
-    //std::cout<<"you are clamping your mobility"<<std::endl;
-     //else
-     //std::cout<<"you model is used"<<std::endl;
-     
+
 
     out->dval_dn()=-(vo*force*(pow(mulow,2)))/(pow((vo+mulow*force*n_now),2));
     out->dval_dgradQF()=-((pow(mulow,2))*vk)/(pow((vk+mulow*force),2));// -vk/force)*(1/n_now);
