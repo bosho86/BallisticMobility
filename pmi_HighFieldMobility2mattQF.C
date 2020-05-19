@@ -81,11 +81,7 @@ public:
     else{
     out-> val()= mu2;}
 
-
-
-
-   
-    out->dval_dgradQF()=-((pow(mulow,2))*vk)/(pow((vk+mulow*force),2));// -vk/force)*(1/n_now);
+    out->dval_dgradQF()=-((pow(mulow,2))*vk)/(pow((vk+mulow*force),2));
     out->dval_dmulow()=-(pow(mumodel,2)/(pow((mumodel+mulow),2)));
 
     WriteUserField (PMI_UserField0, qf);
