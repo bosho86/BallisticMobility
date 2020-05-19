@@ -97,7 +97,7 @@ public:
 
 
     out->dval_dn()=-(vo*force*(pow(mulow,2)))/(pow((vo+mulow*force*n_now),2));
-    out->dval_dgradQF()=-((pow(mulow,2))*vk)/(pow((vk+mulow*force),2));// -vk/force)*(1/n_now);
+    out->dval_dgradQF()=-((pow(mulow,2))*vk)/(pow((vk+mulow*force),2));
     out->dval_dmulow()=-(pow(mumodel,2)/(pow((mumodel+mulow),2)));
     
     WriteUserField (PMI_UserField0, cb_edge_tob0);
@@ -117,7 +117,7 @@ public:
 double pmi_hfmobility2::cb_edge_tob0=-1e10;
 double pmi_hfmobility2::eDensity_tob0=1e10;
 double pmi_hfmobility2::psi_tob0=0.001;
- double pmi_hfmobility2::mu_tob0=1e10;
+double pmi_hfmobility2::mu_tob0=1e10;
 double pmi_hfmobility2::efield_tob0=0.001;
 extern "C"
 
